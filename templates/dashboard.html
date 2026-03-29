@@ -452,8 +452,12 @@ async function loadEvents() {
     const d = await r.json();
     loaded  = d.events;
     document.getElementById('s-keys').textContent = d.total;
+    const feed = document.getElementById('log-feed');
+    const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 60;
     renderLogs();
     updatePg(d.total, d.per_page);
+    // Auto-scroll to bottom (newest) only if user was already near bottom
+    if (atBottom) feed.scrollTop = feed.scrollHeight;
   } catch(e) { console.error(e); }
 }
 
@@ -486,7 +490,7 @@ async function loadStats() {
 
 async function loadScreenshots() {
   try {
-    const r = await fetch('/api/screenshots?limit=20');
+    const r = await fetch('/api/screenshots');   // all screenshots, oldest first
     const d = await r.json();
     const g = document.getElementById('ss-grid');
     if (!d.screenshots.length) {
@@ -497,6 +501,7 @@ async function loadScreenshots() {
       </div>`;
       return;
     }
+    const atBottom = g.scrollHeight - g.scrollTop - g.clientHeight < 60;
     g.innerHTML = d.screenshots.map(s => `
       <div class="ss-card" onclick="openLb('${s.image}','${esc(s.timestamp)} — ${esc(s.window)}')">
         <div class="ss-img-wrap">
@@ -508,6 +513,8 @@ async function loadScreenshots() {
           <span class="ss-win">${esc(s.window)}</span>
         </div>
       </div>`).join('');
+    // Scroll to bottom (newest screenshot)
+    if (atBottom) g.scrollTop = g.scrollHeight;
   } catch(e) { console.error(e); }
 }
 
